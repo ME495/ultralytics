@@ -1013,7 +1013,7 @@ class RandomPerspective:
         self.border = border  # mosaic border
         self.pre_transform = pre_transform
 
-    def affine_transform(self, img, border):
+    def affine_transform(self, img, border, cls):
         """
         Applies a sequence of affine transformations centered around the image center.
 
@@ -1024,6 +1024,7 @@ class RandomPerspective:
         Args:
             img (np.ndarray): Input image to be transformed.
             border (Tuple[int, int]): Border dimensions for the transformed image.
+            cls (np.ndarray): Class labels.
 
         Returns:
             (Tuple[np.ndarray, np.ndarray, float]): A tuple containing:
@@ -1050,7 +1051,10 @@ class RandomPerspective:
 
         # Rotation and Scale
         R = np.eye(3, dtype=np.float32)
-        a = random.uniform(-self.degrees, self.degrees)
+        if 11 in cls or 12 in cls or 13 in cls or 14 in cls:
+            a = 0 # 不对thumb_up、thumb_down、thumb_left、thumb_right进行旋转
+        else:
+            a = random.uniform(-self.degrees, self.degrees)
         # a += random.choice([-180, -90, 0, 90])  # add 90deg rotations to small rotations
         s = random.uniform(1 - self.scale, 1 + self.scale)
         # s = 2 ** random.uniform(-scale, scale)
@@ -1231,7 +1235,7 @@ class RandomPerspective:
         self.size = img.shape[1] + border[1] * 2, img.shape[0] + border[0] * 2  # w, h
         # M is affine matrix
         # Scale for func:`box_candidates`
-        img, M, scale = self.affine_transform(img, border)
+        img, M, scale = self.affine_transform(img, border, cls)
 
         bboxes = self.apply_bboxes(instances.bboxes, M)
 
