@@ -1056,7 +1056,9 @@ class RandomPerspective:
         if 11 in cls or 12 in cls or 13 in cls or 14 in cls:
             a = 0 # 不对thumb_up、thumb_down、thumb_left、thumb_right进行旋转
         else:
-            a = random.uniform(-self.degrees, self.degrees)
+            # a = random.uniform(-self.degrees, self.degrees)
+            # 从-self.degrees, 0, self.degrees中随机选择一个角度
+            a = random.choice([-self.degrees, 0, self.degrees])
         # a += random.choice([-180, -90, 0, 90])  # add 90deg rotations to small rotations
         s = random.uniform(1 - self.scale, 1 + self.scale)
         # s = 2 ** random.uniform(-scale, scale)
